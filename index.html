@@ -1,0 +1,2610 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0757d8">
+<title>เครื่องคิดเลข ไทยช่วยไทยพลัส 60/40 v21 UI TEXT DATE POLISH</title>
+
+<style>
+/* =========================================================
+   เครื่องคิดเลข ไทยช่วยไทยพลัส 60/40
+   Version: v18 DEV SOURCE COMPLETE
+   จุดสำคัญ:
+   1) สูตร 60/40 ห้ามเพี้ยน
+   2) รัฐช่วยสูงสุดวันละ 200 บาท
+   3) รัฐช่วยสูงสุดเดือนละ 1,000 บาท
+   4) ราคาเริ่มต้น 333.33 บาท
+   5) กรอกช่อง ราคา / รัฐช่วย / เราจ่าย แล้วช่องอื่นต้องเปลี่ยนทันที
+   6) รองรับมือถือ + คอมพิวเตอร์ + Dark Mode
+   ========================================================= */
+
+:root{
+  --bg:#edf5ff;
+  --surface:#ffffff;
+  --surface2:#f6faff;
+  --text:#071a3a;
+  --muted:#64748b;
+  --blue:#0757d8;
+  --blue2:#1d8bff;
+  --green:#10a35b;
+  --green2:#16c978;
+  --red:#e82134;
+  --red2:#ff5d6a;
+  --yellow:#ffc33d;
+  --line:#d7e5f6;
+  --shadow:0 14px 32px rgba(24,66,135,.12);
+  --softShadow:0 8px 18px rgba(24,66,135,.09);
+  --radius:24px;
+}
+html[data-theme="dark"]{
+  --bg:#050d18;
+  --surface:#0d1829;
+  --surface2:#101f35;
+  --text:#f7fbff;
+  --muted:#d6e2f2;
+  --blue:#3b8dff;
+  --blue2:#55b2ff;
+  --green:#24d47c;
+  --green2:#5df0a4;
+  --red:#ff4d5d;
+  --red2:#ff7b85;
+  --yellow:#ffc84c;
+  --line:#2d496c;
+  --shadow:0 18px 36px rgba(0,0,0,.38);
+  --softShadow:0 10px 24px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-weight:800;
+}
+body{padding:8px}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation;cursor:pointer}
+input,select,textarea{outline:none}
+.app{max-width:1180px;margin:0 auto}
+
+/* ---------- Top Bar ---------- */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(180deg,#0766e8,#0648b6);
+  color:white;
+  border-radius:0 0 22px 22px;
+  padding:10px 12px;
+  box-shadow:var(--shadow);
+}
+html[data-theme="dark"] .topbar{
+  background:linear-gradient(180deg,#0a1830,#050d18);
+  border:1px solid #244161;
+}
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#0757d8;
+  font-size:24px;
+  box-shadow:inset 0 1px 0 #fff,0 8px 18px rgba(0,0,0,.16);
+}
+.appTitle{
+  flex:1;
+  text-align:center;
+  font-size:clamp(18px,4.5vw,32px);
+  line-height:1.05;
+  font-weight:1000;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.appTitle .g{color:#30e17f}
+.appTitle .r{color:#ff4e5f}
+.topBtn{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:16px;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  font-size:21px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+  margin:10px 0;
+}
+.tab{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  color:var(--text);
+  border-radius:18px;
+  padding:9px 6px;
+  box-shadow:var(--softShadow);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:68px;
+}
+.tab.active{
+  outline:3px solid rgba(7,87,216,.16);
+  border-color:#8db8f4;
+}
+html[data-theme="dark"] .tab.active{outline-color:rgba(59,141,255,.24)}
+.tabIcon{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:linear-gradient(180deg,#fff,#eaf3ff);
+  box-shadow:inset 0 1px 0 #fff,0 6px 14px rgba(0,0,0,.08);
+  font-size:20px;
+  margin-bottom:4px;
+}
+html[data-theme="dark"] .tabIcon{
+  background:linear-gradient(180deg,#223854,#14243a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 18px rgba(0,0,0,.25);
+}
+.tabMain{font-size:15px;font-weight:1000;line-height:1.05}
+.tabSub{font-size:10px;color:var(--muted);line-height:1.05;margin-top:1px}
+
+/* ---------- Layout ---------- */
+.view{display:none}
+.view.active{display:block}
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);
+  gap:12px;
+  align-items:start;
+}
+.card{
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:14px;
+  box-shadow:var(--shadow);
+  margin-bottom:12px;
+}
+.sectionTitle{
+  font-size:clamp(24px,5.5vw,34px);
+  font-weight:1000;
+  margin:0 0 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.g{color:var(--green)!important}
+.r{color:var(--red)!important}
+.b{color:var(--blue)!important}
+
+/* ---------- Calculator ---------- */
+.remainPill{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:2px solid rgba(16,195,113,.35);
+  background:linear-gradient(180deg,#f3fff8,#e7fff0);
+  color:#082041;
+  border-radius:999px;
+  padding:12px 16px;
+  font-size:clamp(18px,4.6vw,28px);
+  font-weight:1000;
+  margin:2px 0 12px;
+  box-shadow:var(--softShadow);
+}
+html[data-theme="dark"] .remainPill{
+  background:linear-gradient(180deg,#063a24,#032716);
+  border-color:#14b66d;
+  color:#f6fff9;
+}
+.dot3d{
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#b8ffce 0,#4de18f 38%,#108c52 80%);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.7),0 8px 16px rgba(16,163,91,.24);
+}
+.priceBox{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 72px;
+  gap:10px;
+  align-items:center;
+  border-radius:26px;
+  border:2px solid var(--line);
+  background:linear-gradient(180deg,#fff,#f7fbff);
+  padding:14px 12px 14px 18px;
+  min-height:168px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.88);
+  margin-bottom:10px;
+}
+html[data-theme="dark"] .priceBox{
+  background:linear-gradient(180deg,#0d1c33,#091426);
+  border-color:#33557d;
+}
+.priceContent{text-align:center;min-width:0}
+.priceLabel{
+  font-size:clamp(20px,5.2vw,28px);
+  font-weight:1000;
+  color:var(--blue);
+  line-height:1.12;
+}
+.priceInput{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#075ee8;
+  text-align:center;
+  font-weight:1000;
+  font-size:clamp(54px,14.2vw,84px);
+  line-height:.95;
+  letter-spacing:-1.4px;
+  text-shadow:0 12px 22px rgba(7,87,216,.20);
+  padding:3px 0;
+}
+html[data-theme="dark"] .priceInput{
+  color:#267aff;
+  text-shadow:0 12px 30px rgba(36,120,255,.36),0 0 22px rgba(36,120,255,.20);
+}
+.priceHint{
+  font-size:clamp(10px,2.8vw,14px);
+  font-weight:1000;
+  color:var(--muted);
+  line-height:1.14;
+  text-wrap:balance;
+}
+.resetBtn{
+  width:68px;
+  height:68px;
+  min-width:68px;
+  border:4px solid rgba(255,255,255,.95);
+  border-radius:22px;
+  background:linear-gradient(180deg,#ffb29e 0%,#ff7558 32%,#ff3f25 100%);
+  color:#fff;
+  font-size:39px;
+  font-weight:1000;
+  display:grid;
+  place-items:center;
+  box-shadow:0 18px 34px rgba(255,69,44,.32),0 10px 22px rgba(0,0,0,.15),inset 0 4px 0 rgba(255,255,255,.56),inset 0 -9px 16px rgba(142,20,0,.25);
+  position:relative;
+}
+.resetBtn::after{
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  top:7px;
+  height:28%;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0));
+}
+.resetBtn:active{transform:scale(.96)}
+
+/* ---------- Pay Cards ---------- */
+.payGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  align-items:stretch;
+  margin-top:0;
+}
+.payCard{
+  min-width:0;
+  border:3px solid;
+  border-radius:24px;
+  padding:12px 8px;
+  text-align:center;
+  min-height:126px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--softShadow);
+  overflow:hidden;
+}
+.payCard.gov{
+  border-color:#19bf70;
+  background:linear-gradient(180deg,#f1fff7,#e8fff0);
+}
+.payCard.user{
+  border-color:#ff5f6f;
+  background:linear-gradient(180deg,#fff7f8,#fff0f2);
+}
+html[data-theme="dark"] .payCard.gov{
+  background:linear-gradient(180deg,#08331f,#061f15);
+  border-color:#23d47d;
+}
+html[data-theme="dark"] .payCard.user{
+  background:linear-gradient(180deg,#3b1218,#270c11);
+  border-color:#ff6370;
+}
+.icon3d{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  background:linear-gradient(180deg,#fff,#eff6ff);
+  box-shadow:0 10px 22px rgba(0,0,0,.13),inset 0 2px 0 #fff;
+  display:grid;
+  place-items:center;
+  margin-bottom:4px;
+  overflow:hidden;
+}
+html[data-theme="dark"] .icon3d{
+  background:linear-gradient(180deg,#1d3352,#12253e);
+  box-shadow:0 12px 24px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.icon3d svg{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:36px;
+  max-height:36px;
+}
+.smileIcon svg{max-width:38px;max-height:38px}
+.payTitle{
+  font-size:clamp(14px,4vw,19px);
+  line-height:1.1;
+  font-weight:1000;
+  text-align:center;
+}
+.gov .payTitle,.gov .payInput{color:var(--green)}
+.user .payTitle,.user .payInput{color:var(--red)}
+.payInput{
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:center;
+  font-weight:1000;
+  outline:0;
+  font-size:clamp(28px,8.4vw,46px);
+  line-height:1;
+  letter-spacing:-1.1px;
+  padding:2px 0;
+}
+.paySub{
+  font-size:10.5px;
+  line-height:1.12;
+  color:var(--muted);
+  font-weight:900;
+  text-align:center;
+}
+
+/* ---------- Ratio ---------- */
+.ratioBox{
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  margin-top:8px;
+}
+.ratioTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:6px;
+  flex-wrap:nowrap;
+}
+.ratioText{
+  font-size:13px;
+  line-height:1.12;
+  font-weight:1000;
+}
+.lockLine{
+  display:flex;
+  gap:5px;
+  align-items:center;
+  justify-content:center;
+  margin-top:0;
+  color:var(--muted);
+  font-size:11px;
+  white-space:nowrap;
+}
+.rangeRow{
+  display:grid;
+  grid-template-columns:28px 1fr 28px;
+  gap:4px;
+  align-items:center;
+  margin-top:4px;
+}
+.smallBtn{
+  height:28px;
+  border:0;
+  border-radius:9px;
+  font-size:18px;
+  font-weight:1000;
+  color:var(--blue);
+  background:linear-gradient(180deg,#fff,#edf5ff);
+  box-shadow:var(--softShadow);
+  padding:0;
+}
+#rateSlider{width:100%;height:18px;accent-color:var(--green)}
+
+/* ---------- Keypad ---------- */
+.keypad{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:8px;
+}
+.key{
+  min-height:54px;
+  border:2px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#eef5fd);
+  color:#061a3d;
+  font-size:clamp(26px,7vw,34px);
+  font-weight:1000;
+  box-shadow:var(--softShadow);
+}
+.key.blue{
+  background:linear-gradient(180deg,#45a8ff,#1269e8);
+  color:#fff;
+  border-color:#2d82ff;
+}
+.key.orange{
+  background:linear-gradient(180deg,#ffca5f,#ffad00);
+  color:#fff;
+  border-color:#ffc34b;
+}
+html[data-theme="dark"] .key{
+  background:linear-gradient(180deg,#fff,#eef5fd);
+  color:#061a3d;
+  border-color:#d8e5f7;
+  box-shadow:0 10px 20px rgba(0,0,0,.28);
+}
+
+/* ---------- Record Box ---------- */
+.recordBox{
+  display:flex;
+  flex-direction:column;
+  border:3px solid var(--blue);
+  border-radius:24px;
+  padding:12px;
+  margin-top:10px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  box-shadow:var(--softShadow);
+}
+.recordTitle{
+  order:1;
+  font-size:clamp(20px,5vw,28px);
+  font-weight:1000;
+  color:var(--blue);
+  margin-bottom:8px;
+}
+.bigSave{
+  order:2;
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:12px 12px;
+  margin:0 0 8px;
+  background:linear-gradient(180deg,#34a6ff,#0668e9);
+  color:#fff;
+  font-size:19px;
+  font-weight:1000;
+  box-shadow:var(--softShadow);
+}
+#itemName{order:3}
+#itemNote{order:4}
+.recordBox .actions{order:5;margin:7px 0 4px}
+.recordBox .priceHint{order:6}
+#lastSavedBox{order:7}
+.input{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--surface);
+  padding:13px 14px;
+  color:var(--text);
+  font-weight:900;
+  margin:7px 0;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin:10px 0;
+}
+.btn{
+  border:0;
+  border-radius:16px;
+  padding:12px 16px;
+  font-weight:1000;
+  background:linear-gradient(180deg,#fff,#f0f6ff);
+  color:var(--blue);
+  box-shadow:var(--softShadow);
+}
+.btn.primary{background:linear-gradient(180deg,#3aa4ff,#0b66e9);color:#fff}
+.btn.danger{background:linear-gradient(180deg,#ff7382,#ee263b);color:#fff}
+.btn.green{background:linear-gradient(180deg,#31d886,#0aa75c);color:#fff}
+.btn.warn{background:linear-gradient(180deg,#ffd05b,#ffad00);color:#fff}
+
+/* ---------- Result / Notice / Tables ---------- */
+.summaryList{display:grid;gap:10px}
+.resultCard,.stat{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  padding:12px;
+  box-shadow:var(--softShadow);
+}
+.resultRow{
+  display:grid;
+  grid-template-columns:46px 1fr auto;
+  gap:10px;
+  align-items:center;
+}
+.resultIcon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  background:linear-gradient(180deg,#fff,#edf5ff);
+  display:grid;
+  place-items:center;
+  box-shadow:var(--softShadow);
+}
+.resultTitle{font-weight:1000}
+.resultValue{font-size:24px;font-weight:1000}
+.notice{
+  border-radius:18px;
+  padding:13px 14px;
+  border:2px solid var(--line);
+  font-weight:1000;
+  line-height:1.35;
+}
+.notice.good{
+  border-color:#17bf71;
+  background:linear-gradient(180deg,#f2fff8,#e8fff1);
+}
+.notice.warn{
+  border-color:#ffd25f;
+  background:linear-gradient(180deg,#fff9e8,#fff0be);
+}
+.notice.danger{
+  border-color:#ff6974;
+  background:linear-gradient(180deg,#fff4f5,#ffe5e8);
+}
+html[data-theme="dark"] .notice.good{background:linear-gradient(180deg,#073923,#052918)}
+html[data-theme="dark"] .notice.warn{background:linear-gradient(180deg,#4c380d,#302407)}
+html[data-theme="dark"] .notice.danger{background:linear-gradient(180deg,#3a1317,#270b0f)}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.stat{text-align:center;font-size:16px}
+.stat strong{
+  display:block;
+  font-size:clamp(26px,6vw,38px);
+  line-height:1.05;
+  margin:3px 0;
+}
+.tableWrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--surface);
+  box-shadow:var(--softShadow);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:680px;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--line);
+  text-align:center;
+}
+th{
+  background:linear-gradient(180deg,#0b65e7,#0648b6);
+  color:white;
+  font-weight:1000;
+}
+td input{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface2);
+  color:var(--text);
+  padding:8px;
+  font-weight:900;
+}
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.field label{display:block;margin-bottom:6px;font-weight:1000}
+.monthGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.guideGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.guideCard{
+  text-align:center;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:14px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  box-shadow:var(--softShadow);
+}
+.guideCard strong{
+  display:block;
+  font-size:clamp(28px,7vw,46px);
+  line-height:1;
+}
+.lastSaved{display:none;margin-top:10px}
+.hidden{display:none!important}
+
+/* ---------- Compare Tables ---------- */
+.tableTools{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+.compareWrap{
+  max-height:70vh;
+  overflow:auto;
+  border-radius:22px;
+}
+.compareTable{min-width:520px}
+.compareTable th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  font-size:18px;
+  padding:13px 10px;
+}
+.compareTable td{
+  font-size:20px;
+  font-weight:1000;
+  padding:12px 10px;
+}
+.compareTable tr:nth-child(even) td{background:rgba(7,87,216,.035)}
+.compareTable .priceCol{color:var(--blue)}
+.compareTable .govCol{color:var(--green)}
+.compareTable .userCol{color:var(--red)}
+.compareTable .bestRow td{
+  background:linear-gradient(180deg,#fff7cf,#ffed9c);
+  border-top:3px solid #ffc43d;
+  border-bottom:3px solid #ffc43d;
+}
+.compareTable .capRow td{background:linear-gradient(180deg,#fff2f4,#ffe5e9)}
+.compareTable .noteText,.sampleTable .simpleNote{
+  font-size:15px;
+  color:var(--muted);
+  font-weight:900;
+  line-height:1.25;
+}
+html[data-theme="dark"] .compareTable tr:nth-child(even) td{background:rgba(255,255,255,.035)}
+html[data-theme="dark"] .compareTable .bestRow td{background:linear-gradient(180deg,#4a370d,#312408)}
+html[data-theme="dark"] .compareTable .capRow td{background:linear-gradient(180deg,#3a1318,#270c11)}
+.sampleWrap{
+  margin-top:10px;
+  border-radius:22px;
+  overflow:auto;
+}
+.sampleTable th{font-size:18px}
+.sampleTable td{font-size:22px;font-weight:1000}
+.sampleTable .highlight td{
+  background:linear-gradient(180deg,#fff7ce,#ffeda3);
+  border-top:3px solid #ffc43d;
+  border-bottom:3px solid #ffc43d;
+}
+html[data-theme="dark"] .sampleTable .highlight td{background:linear-gradient(180deg,#4a370d,#302408)}
+.explainGrid{grid-template-columns:repeat(3,1fr)}
+.explainCard{
+  text-align:left;
+  position:relative;
+  padding-left:76px;
+  min-height:128px;
+}
+.explainCard .exIcon{
+  position:absolute;
+  left:16px;
+  top:18px;
+  width:44px;
+  height:58px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:26px;
+  font-weight:1000;
+  background:linear-gradient(180deg,#4da7ff,#0864e7);
+  box-shadow:0 12px 22px rgba(8,100,231,.22);
+}
+.explainCard b{
+  display:block;
+  font-size:20px;
+  margin-bottom:5px;
+  color:var(--blue);
+}
+.explainCard p{
+  margin:0;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.35;
+  font-weight:900;
+}
+
+/* ---------- Bottom Mobile Nav ---------- */
+.bottomNav{display:none}
+
+/* ---------- Mobile ---------- */
+@media(max-width:900px){
+  body{padding:0 4px 4px}
+  .layout{display:block}
+  .tabs{
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+  }
+  .tab{
+    min-height:72px;
+    padding:8px 4px;
+  }
+  .tabMain{font-size:16px}
+  .tabSub{font-size:11px}
+  .topbar{border-radius:0 0 18px 18px}
+  .appTitle{text-align:left}
+  .card{
+    padding:8px;
+    border-radius:22px;
+  }
+  .sectionTitle{
+    justify-content:center;
+    text-align:center;
+  }
+  .remainPill{
+    padding:8px 11px;
+    margin-bottom:8px;
+  }
+  .priceBox{
+    grid-template-columns:minmax(0,1fr) 62px;
+    min-height:150px;
+    padding:10px 9px 10px 11px;
+    border-radius:22px;
+  }
+  .resetBtn{
+    width:58px;
+    height:58px;
+    min-width:58px;
+    font-size:33px;
+    border-radius:19px;
+  }
+  .priceInput{
+    font-size:clamp(46px,13vw,66px);
+    letter-spacing:-1.3px;
+  }
+  .payGrid{gap:8px;margin-top:8px}
+  .payCard{
+    min-height:106px;
+    padding:8px 5px;
+    border-radius:18px;
+  }
+  .icon3d{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    margin-bottom:2px;
+  }
+  .icon3d svg{
+    max-width:31px;
+    max-height:31px;
+  }
+  .smileIcon svg{
+    max-width:33px;
+    max-height:33px;
+  }
+  .payTitle{
+    font-size:clamp(13px,3.8vw,17px);
+    line-height:1.08;
+  }
+  .payInput{
+    font-size:clamp(27px,8vw,39px);
+    line-height:1;
+  }
+  .paySub{font-size:10px;line-height:1.05}
+  .ratioBox{
+    padding:7px 9px;
+    border-radius:14px;
+    margin-top:6px;
+  }
+  .ratioText{font-size:13px}
+  .lockLine{font-size:11px}
+  .rangeRow{
+    grid-template-columns:28px 1fr 28px;
+    gap:4px;
+    margin-top:4px;
+  }
+  .smallBtn{
+    height:28px;
+    border-radius:9px;
+    font-size:18px;
+  }
+  .keypad{
+    gap:6px;
+    margin-top:6px;
+  }
+  .key{
+    min-height:48px;
+    border-radius:16px;
+    font-size:clamp(24px,6.8vw,31px);
+  }
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .formGrid,.monthGrid,.guideGrid,.explainGrid{grid-template-columns:1fr}
+  .explainCard{
+    min-height:0;
+    padding:14px 14px 14px 64px;
+  }
+  .explainCard .exIcon{
+    width:38px;
+    height:48px;
+    border-radius:15px;
+    font-size:22px;
+    left:14px;
+    top:14px;
+  }
+  .explainCard b{font-size:clamp(17px,4.6vw,20px)}
+  .explainCard p{font-size:clamp(13px,3.6vw,15px)}
+  .compareWrap{
+    max-height:68vh;
+    margin-left:-2px;
+    margin-right:-2px;
+  }
+  .compareTable{
+    min-width:0;
+    width:100%;
+  }
+  .compareTable th,.sampleTable th{
+    font-size:clamp(13px,3.5vw,16px);
+    padding:10px 5px;
+  }
+  .compareTable td,.sampleTable td{
+    font-size:clamp(15px,4.6vw,20px);
+    padding:10px 5px;
+  }
+  .compareTable .noteText,.sampleTable .simpleNote{
+    font-size:clamp(10px,2.9vw,13px);
+  }
+  .tableTools .btn{
+    width:100%;
+    max-width:330px;
+  }
+  .bottomNav{
+    display:grid;
+    position:sticky;
+    bottom:0;
+    z-index:60;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+    background:linear-gradient(180deg,#0b65e7,#0648b6);
+    border-radius:22px 22px 0 0;
+    padding:8px;
+    box-shadow:0 -12px 26px rgba(0,0,0,.18);
+  }
+  .bottomNav .tab{
+    box-shadow:none;
+    background:transparent;
+    color:white;
+    border:0;
+    min-height:58px;
+  }
+  .bottomNav .tab.active{
+    background:white;
+    color:var(--blue);
+    outline:0;
+  }
+}
+@media(max-width:390px){
+  .priceBox{
+    grid-template-columns:minmax(0,1fr) 56px;
+    min-height:142px;
+  }
+  .resetBtn{
+    width:52px;
+    height:52px;
+    min-width:52px;
+    font-size:30px;
+  }
+  .priceInput{font-size:clamp(42px,12.5vw,58px)}
+  .priceLabel{font-size:18px}
+  .payCard{min-height:100px}
+  .payTitle{font-size:12.8px}
+  .payInput{font-size:clamp(25px,7.6vw,36px)}
+  .key{
+    min-height:44px;
+    font-size:22px;
+  }
+}
+
+/* ===== v21 UI TEXT DATE POLISH: ซื้อรวม -> รัฐจ่ายให้ -> เราจ่ายเอง ===== */
+.planGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.planCard{
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  box-shadow:var(--softShadow);
+  padding:14px;
+}
+.planHead{
+  text-align:center;
+  font-size:clamp(20px,4.8vw,28px);
+  font-weight:1000;
+  color:var(--text);
+  margin-bottom:10px;
+}
+.planLine{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:7px;
+  align-items:baseline;
+  border-radius:16px;
+  padding:9px 10px;
+  margin:7px 0;
+  font-weight:1000;
+}
+.planLine span{font-size:15px;color:var(--text)}
+.planLine strong{font-size:clamp(24px,5.4vw,34px);line-height:1}
+.planLine em{font-style:normal;font-size:13px;color:var(--muted)}
+.planLine.buy{
+  background:linear-gradient(180deg,rgba(7,87,216,.10),rgba(7,87,216,.045));
+  border:1px solid rgba(7,87,216,.22);
+}
+.planLine.gov{
+  background:linear-gradient(180deg,rgba(16,163,91,.12),rgba(16,163,91,.055));
+  border:1px solid rgba(16,163,91,.25);
+}
+.planLine.user{
+  background:linear-gradient(180deg,rgba(232,33,52,.12),rgba(232,33,52,.055));
+  border:1px solid rgba(232,33,52,.25);
+}
+.planLine.buy strong{color:var(--blue)}
+.planLine.gov strong{color:var(--green)}
+.planLine.user strong{color:var(--red)}
+.planNote{
+  margin-top:9px;
+  padding:9px;
+  border-radius:14px;
+  background:rgba(100,116,139,.08);
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+  font-weight:900;
+}
+.quickExample{
+  margin-top:12px;
+  border:2px solid rgba(7,87,216,.18);
+  border-radius:22px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  padding:14px;
+  box-shadow:var(--softShadow);
+}
+.quickTitle{
+  text-align:center;
+  font-size:clamp(18px,4.5vw,24px);
+  font-weight:1000;
+  margin-bottom:10px;
+}
+.quickFlow{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr;
+  gap:8px;
+  align-items:center;
+  text-align:center;
+}
+.quickFlow div:not(.arrow){
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  background:rgba(255,255,255,.35);
+}
+html[data-theme="dark"] .quickFlow div:not(.arrow){
+  background:rgba(255,255,255,.04);
+}
+.quickFlow b{
+  display:block;
+  font-size:clamp(16px,4vw,22px);
+  line-height:1.1;
+}
+.quickFlow small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+  font-weight:900;
+}
+.quickFlow .arrow{
+  color:var(--blue);
+  font-size:24px;
+  font-weight:1000;
+}
+@media(max-width:900px){
+  .planGrid{grid-template-columns:1fr;gap:10px}
+  .planCard{padding:12px;border-radius:22px}
+  .planHead{font-size:24px;margin-bottom:8px}
+  .planLine{
+    grid-template-columns:1fr auto auto;
+    padding:9px;
+    margin:6px 0;
+  }
+  .planLine span{font-size:15px}
+  .planLine strong{font-size:clamp(26px,8vw,36px)}
+  .quickFlow{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+  .quickFlow .arrow{
+    transform:rotate(90deg);
+    font-size:20px;
+    line-height:1;
+  }
+}
+
+
+/* ===== v20 Thai Date UI + clearer guide title ===== */
+.quickTitle{
+  font-size:clamp(22px,5vw,30px)!important;
+  color:var(--text)!important;
+  text-decoration:none!important;
+}
+.quickTitle::after{
+  content:"";
+  display:block;
+  width:76px;
+  height:4px;
+  border-radius:999px;
+  background:var(--red);
+  margin:7px auto 0;
+}
+.todayFormGrid{
+  grid-template-columns:1.1fr 1fr 1fr;
+  align-items:end;
+}
+.thaiDateField,.thaiMonthField{
+  min-width:0;
+}
+.thaiDateCard{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:linear-gradient(180deg,var(--surface),var(--surface2));
+  box-shadow:var(--softShadow);
+}
+.thaiMonthCard{
+  max-width:720px;
+}
+.dateNavBtn{
+  border:0;
+  border-radius:15px;
+  padding:10px 12px;
+  color:#fff;
+  background:linear-gradient(180deg,#37a8ff,#0864e7);
+  font-weight:1000;
+  box-shadow:var(--softShadow);
+  white-space:nowrap;
+}
+.thaiDateMain{
+  min-width:0;
+  text-align:center;
+}
+.thaiDateLabel{
+  font-size:clamp(20px,4.8vw,30px);
+  font-weight:1000;
+  color:var(--blue);
+  line-height:1.05;
+}
+.thaiDateSub{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:900;
+  margin-top:4px;
+}
+.thaiSelectRow{
+  display:grid;
+  grid-template-columns:1fr 1.25fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.thaiMonthField .thaiSelectRow{
+  grid-template-columns:1.25fr 1fr;
+  max-width:520px;
+}
+.thaiMiniSelect{
+  margin:0!important;
+  padding:10px 12px!important;
+  text-align:center;
+  font-weight:1000;
+}
+html[data-theme="dark"] .dateNavBtn{
+  background:linear-gradient(180deg,#2f8fff,#0757d8);
+}
+@media(max-width:900px){
+  .todayFormGrid{
+    grid-template-columns:1fr;
+  }
+  .thaiDateCard{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .dateNavBtn{
+    width:100%;
+    padding:11px 10px;
+  }
+  .thaiDateLabel{
+    font-size:clamp(22px,6vw,30px);
+  }
+  .thaiDateSub{
+    font-size:clamp(12px,3.2vw,14px);
+  }
+  .thaiSelectRow{
+    grid-template-columns:1fr 1.2fr 1fr;
+    gap:6px;
+  }
+  .thaiMonthField .thaiSelectRow{
+    grid-template-columns:1.2fr 1fr;
+    max-width:none;
+  }
+  .quickFlow{
+    margin-top:4px;
+  }
+}
+@media(max-width:390px){
+  .thaiSelectRow{
+    grid-template-columns:1fr;
+  }
+  .thaiMonthField .thaiSelectRow{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* ===== v21 Final polish: Thai date fits + remove example underline ===== */
+.quickTitle{
+  text-decoration:none!important;
+  border:0!important;
+  padding-bottom:0!important;
+  margin-bottom:10px!important;
+}
+.quickTitle::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* วันที่บันทึก: ให้วันที่อยู่เต็มบรรทัด ไม่ถูกปุ่มบีบจนตกบรรทัด */
+.todayFormGrid{
+  grid-template-columns:minmax(430px,1.12fr) minmax(280px,1fr) minmax(250px,.95fr)!important;
+  gap:12px!important;
+  align-items:end!important;
+}
+.thaiDateCard{
+  grid-template-columns:1fr 1fr!important;
+  grid-template-areas:
+    "main main"
+    "prev next"!important;
+  gap:8px!important;
+  padding:10px!important;
+}
+.thaiDateMain{
+  grid-area:main!important;
+  min-width:0!important;
+}
+#prevDay,#prevMonth{
+  grid-area:prev!important;
+}
+#nextDay,#nextMonth{
+  grid-area:next!important;
+}
+.thaiDateLabel{
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  font-size:clamp(20px,2.25vw,26px)!important;
+  line-height:1.1!important;
+}
+.thaiDateSub{
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  font-size:clamp(11px,1.2vw,13px)!important;
+  line-height:1.25!important;
+}
+.dateNavBtn{
+  font-size:14px!important;
+  padding:8px 10px!important;
+  border-radius:14px!important;
+  min-height:38px!important;
+}
+.thaiSelectRow{
+  gap:8px!important;
+}
+.thaiMiniSelect{
+  min-height:44px!important;
+  font-size:15px!important;
+}
+
+/* หน้าแนะนำ: ลดความสับสนของหัวข้อและทำให้อ่านง่าย */
+.quickExample{
+  padding:12px!important;
+}
+.quickFlow b{
+  white-space:nowrap!important;
+}
+.planLine span{
+  white-space:nowrap!important;
+}
+
+/* คอมพิวเตอร์จอเล็กกว่า 1100px ให้จัดวันที่ลงบรรทัดเดียวต่อช่อง */
+@media(max-width:1100px){
+  .todayFormGrid{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .thaiDateField{
+    grid-column:1 / -1!important;
+  }
+}
+
+/* มือถือ */
+@media(max-width:900px){
+  .todayFormGrid{
+    grid-template-columns:1fr!important;
+  }
+  .thaiDateCard{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-areas:
+      "main main"
+      "prev next"!important;
+  }
+  .thaiDateLabel{
+    font-size:clamp(21px,6vw,30px)!important;
+  }
+  .thaiDateSub{
+    white-space:normal!important;
+    font-size:clamp(12px,3.2vw,14px)!important;
+  }
+  .dateNavBtn{
+    font-size:14px!important;
+    min-height:42px!important;
+  }
+  .thaiSelectRow{
+    grid-template-columns:1fr 1.15fr 1fr!important;
+  }
+}
+@media(max-width:390px){
+  .thaiDateLabel{
+    font-size:22px!important;
+  }
+  .thaiSelectRow{
+    grid-template-columns:1fr!important;
+  }
+}
+
+</style>
+</head>
+
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="logo">🧮</div>
+    <div class="appTitle">เครื่องคิดเลข ไทยช่วยไทยพลัส <span class="g">60</span>/<span class="r">40</span></div>
+    <button class="topBtn" id="themeBtn" title="เปลี่ยนโหมด">🌙</button>
+    <button class="topBtn" onclick="showPage('settings')" title="ตั้งค่า">☰</button>
+  </header>
+
+  <nav class="tabs" id="tabsTop">
+    <button class="tab active" data-page="home"><span class="tabIcon">🛍️</span><span class="tabMain">ราคาสินค้า</span><span class="tabSub">คำนวณหลัก</span></button>
+    <button class="tab" data-page="today"><span class="tabIcon">🧾</span><span class="tabMain">วันนี้</span><span class="tabSub">บันทึก/แก้ไข</span></button>
+    <button class="tab" data-page="month"><span class="tabIcon">📅</span><span class="tabMain">รายเดือน</span><span class="tabSub">สรุปเดือน</span></button>
+    <button class="tab" data-page="guide"><span class="tabIcon">📊</span><span class="tabMain">ตาราง</span><span class="tabSub">แนะนำ</span></button>
+    <button class="tab" data-page="settings"><span class="tabIcon">⚙️</span><span class="tabMain">ตั้งค่า</span><span class="tabSub">ล้าง/สำรอง</span></button>
+    <button class="tab" data-page="info"><span class="tabIcon">ℹ️</span><span class="tabMain">ข้อมูล</span><span class="tabSub">สูตร/วิธีใช้</span></button>
+  </nav>
+
+  <main>
+    <section class="view active" id="page-home">
+      <div class="layout">
+        <div>
+          <div class="card">
+            <h1 class="sectionTitle">🔢 เครื่องคิดเลข</h1>
+            <div class="remainPill"><span class="dot3d"></span> เหลือรัฐช่วย <span id="remainTodayTop">200.00</span> บาท</div>
+
+            <div class="priceBox">
+              <div class="priceContent">
+                <div class="priceLabel">ราคาสินค้าทั้งหมด</div>
+                <input id="price" class="priceInput calcInput" inputmode="decimal" value="333.33" aria-label="ราคาสินค้า">
+                <div class="priceHint">ค่าแนะนำ <span class="b">333.33 บาท</span> เพื่อใช้สิทธิรัฐใกล้เต็มวัน<br>แตะราคา / รัฐช่วย / เราจ่าย แล้วกดตัวเลขด้านล่าง</div>
+              </div>
+              <button class="resetBtn" id="resetCalc" title="รีเซ็ตเป็น 333.33">↻</button>
+            </div>
+
+            <div class="payGrid">
+              <div class="payCard gov">
+                <div class="icon3d">
+                  <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="bankG" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#6ef2ad"/>
+                        <stop offset="1" stop-color="#0aa75c"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="32" cy="32" r="28" fill="#fff"/>
+                    <path d="M10 25 32 12l22 13v5H10z" fill="url(#bankG)"/>
+                    <rect x="15" y="31" width="34" height="18" rx="3" fill="#e9fff2" stroke="#0aa75c" stroke-width="2"/>
+                    <path d="M21 34v11M32 34v11M43 34v11" stroke="#0aa75c" stroke-width="4" stroke-linecap="round"/>
+                    <rect x="13" y="50" width="38" height="5" rx="2.5" fill="#0aa75c"/>
+                    <circle cx="32" cy="23" r="5" fill="#0757d8"/>
+                    <path d="M32 19v8M29 22h6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="payTitle">รัฐช่วย (<span id="ratioGovText">60%</span>)</div>
+                <input id="gov" class="payInput calcInput" inputmode="decimal" value="200.00" aria-label="รัฐช่วย">
+                <div class="paySub">สูงสุดตามสิทธิที่เหลือ</div>
+              </div>
+
+              <div class="payCard user">
+                <div class="icon3d smileIcon">
+                  <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="smileG" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#ffef9d"/>
+                        <stop offset="1" stop-color="#ffb400"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="32" cy="32" r="28" fill="#fff"/>
+                    <circle cx="32" cy="32" r="20" fill="url(#smileG)" stroke="#f59e0b" stroke-width="2"/>
+                    <circle cx="25" cy="27" r="2.6" fill="#6b4b00"/>
+                    <circle cx="39" cy="27" r="2.6" fill="#6b4b00"/>
+                    <path d="M23 38c2.7 3.8 5.8 5.7 9 5.7s6.3-1.9 9-5.7" fill="none" stroke="#6b4b00" stroke-width="3.3" stroke-linecap="round"/>
+                    <circle cx="23" cy="33" r="2" fill="#ff9ab0" opacity=".75"/>
+                    <circle cx="41" cy="33" r="2" fill="#ff9ab0" opacity=".75"/>
+                  </svg>
+                </div>
+                <div class="payTitle">เราจ่ายเอง (<span id="ratioUserText">40%</span>)</div>
+                <input id="userPay" class="payInput calcInput" inputmode="decimal" value="133.33" aria-label="เราจ่ายเอง">
+                <div class="paySub">ส่วนที่ต้องจ่ายเอง</div>
+              </div>
+            </div>
+
+            <div class="ratioBox" id="ratioBox">
+              <div class="ratioTop">
+                <div class="ratioText">⚖️ สัดส่วน รัฐช่วย <span class="g" id="rateGovLabel">60%</span> / เราจ่าย <span class="r" id="rateUserLabel">40%</span></div>
+                <label class="lockLine"><input type="checkbox" id="lockFormula" checked> ล็อกสูตร 60/40</label>
+              </div>
+              <div class="rangeRow">
+                <button class="smallBtn" id="decRate">−</button>
+                <input id="rateSlider" type="range" min="0" max="100" step="1" value="60">
+                <button class="smallBtn" id="incRate">＋</button>
+              </div>
+            </div>
+
+            <div class="keypad" id="keypad">
+              <button class="key" data-key="7">7</button><button class="key" data-key="8">8</button><button class="key" data-key="9">9</button><button class="key blue" data-act="back">⌫</button>
+              <button class="key" data-key="4">4</button><button class="key" data-key="5">5</button><button class="key" data-key="6">6</button><button class="key blue" data-act="clear">C</button>
+              <button class="key" data-key="1">1</button><button class="key" data-key="2">2</button><button class="key" data-key="3">3</button><button class="key orange" data-act="plus">+</button>
+              <button class="key" data-key="0">0</button><button class="key" data-key="00">00</button><button class="key" data-key=".">.</button><button class="key blue" data-act="equal">=</button>
+            </div>
+
+            <div class="recordBox">
+              <div class="recordTitle">💾 บันทึกรายการนี้ต่อครั้ง</div>
+              <button class="bigSave" id="saveRecordBtn">+ บันทึกรายการนี้</button>
+              <input class="input" id="itemName" placeholder="ชื่อรายการ เช่น ข้าวสาร / น้ำมันพืช">
+              <input class="input" id="itemNote" placeholder="หมายเหตุ เช่น ร้านค้า / รอบซื้อ">
+              <div class="actions"><button class="btn warn" id="undoLastBtn">↩️ ยกเลิกรายการล่าสุด</button></div>
+              <div class="priceHint">หลังบันทึก ระบบจะคำนวณสิทธิที่เหลือวันนี้ รัฐช่วยได้อีก เราจ่ายได้อีก และซื้อเพิ่มได้สูงสุดทันที</div>
+              <div class="notice good lastSaved" id="lastSavedBox"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <h2 class="sectionTitle">📊 ผลการคำนวณ</h2>
+            <div class="summaryList">
+              <div class="resultCard"><div class="resultRow"><div class="resultIcon">🛒</div><div><div class="resultTitle">ราคาสินค้าทั้งหมด</div><div class="resultValue b" id="resPrice">333.33</div></div><button class="btn" data-focus="price">✎</button></div></div>
+              <div class="resultCard"><div class="resultRow"><div class="resultIcon">🏦</div><div><div class="resultTitle g">รัฐช่วยจ่าย</div><div class="resultValue g" id="resGov">200.00</div><small class="paySub">ไม่เกินสิทธิรายวัน/เดือน</small></div><button class="btn" data-focus="gov">✎</button></div></div>
+              <div class="resultCard"><div class="resultRow"><div class="resultIcon">😊</div><div><div class="resultTitle r">เราจ่ายเอง</div><div class="resultValue r" id="resUser">133.33</div><small class="paySub" id="cashHint">ควรเตรียมประมาณ 134 บาท</small></div><button class="btn" data-focus="userPay">✎</button></div></div>
+              <div class="notice warn" id="todayAdvice">กำลังคำนวณคำแนะนำ...</div>
+              <div class="notice good" id="formulaStatus">🔔 พร้อมใช้งาน สูตรถูกต้อง</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="page-today">
+      <div class="card">
+        <h1 class="sectionTitle">🧾 รายการบันทึก</h1>
+        <div class="formGrid todayFormGrid">
+          <div class="field thaiDateField">
+            <label>วันที่บันทึก</label>
+            <input type="hidden" id="selectedDate">
+            <div class="thaiDateCard">
+              <button class="dateNavBtn" id="prevDay" type="button">‹ วันก่อน</button>
+              <div class="thaiDateMain">
+                <div class="thaiDateLabel" id="thaiDateLabel">วันนี้ 02 มิ.ย. 69</div>
+                <div class="thaiDateSub" id="thaiDateSub">วันอังคารที่ 02 มิถุนายน 2569</div>
+              </div>
+              <button class="dateNavBtn" id="nextDay" type="button">วันถัดไป ›</button>
+            </div>
+            <div class="thaiSelectRow">
+              <select class="input thaiMiniSelect" id="dateDaySelect" aria-label="เลือกวัน"></select>
+              <select class="input thaiMiniSelect" id="dateMonthSelect" aria-label="เลือกเดือน"></select>
+              <select class="input thaiMiniSelect" id="dateYearSelect" aria-label="เลือกปี"></select>
+            </div>
+          </div>
+          <div class="field"><label>ค้นหารายการ/ร้านค้า</label><input class="input" id="searchText" placeholder="ค้นหารายการ/ร้านค้า"></div>
+          <div class="field"><label>ตัวกรอง</label><select class="input" id="recordFilter"><option value="all">ทั้งหมด</option><option value="limited">เฉพาะรายการเกินสิทธิ</option><option value="full">เฉพาะรายการได้ 60% เต็ม</option></select></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="addBlank">+ เพิ่มโน้ต/รายการว่าง</button>
+          <button class="btn danger" id="clearDay">ล้างวันนี้</button>
+        </div>
+        <div class="stats">
+          <div class="stat">ซื้อไปแล้วรวม<strong class="b" id="statBuy">0.00</strong>บาท</div>
+          <div class="stat">รัฐช่วยไปแล้ว<strong class="g" id="statGov">0.00</strong>บาท</div>
+          <div class="stat">เราจ่ายไปแล้ว<strong class="r" id="statUser">0.00</strong>บาท</div>
+          <div class="stat">สิทธิรัฐเหลือ<strong class="g" id="statRemain">200.00</strong>บาท</div>
+        </div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>เวลา</th><th>รายการ</th><th>หมายเหตุ</th><th>ราคา</th><th>รัฐช่วย</th><th>เราจ่าย</th><th>จัดการ</th></tr></thead>
+            <tbody id="recordRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="page-month">
+      <div class="card">
+        <h1 class="sectionTitle">📅 สรุปรายเดือน</h1>
+        <div class="field thaiMonthField">
+          <label>เดือนที่สรุป</label>
+          <input type="hidden" id="selectedMonth">
+          <div class="thaiDateCard thaiMonthCard">
+            <button class="dateNavBtn" id="prevMonth" type="button">‹ เดือนก่อน</button>
+            <div class="thaiDateMain">
+              <div class="thaiDateLabel" id="thaiMonthLabel">มิถุนายน 2569</div>
+              <div class="thaiDateSub" id="thaiMonthSub">สรุปข้อมูลรายเดือนแบบปี พ.ศ.</div>
+            </div>
+            <button class="dateNavBtn" id="nextMonth" type="button">เดือนถัดไป ›</button>
+          </div>
+          <div class="thaiSelectRow">
+            <select class="input thaiMiniSelect" id="monthMonthSelect" aria-label="เลือกเดือน"></select>
+            <select class="input thaiMiniSelect" id="monthYearSelect" aria-label="เลือกปี"></select>
+          </div>
+        </div>
+        <div class="monthGrid">
+          <div class="guideCard">ซื้อรวมเดือนนี้<strong class="b" id="mBuy">0.00</strong>บาท</div>
+          <div class="guideCard">รัฐช่วยเดือนนี้<strong class="g" id="mGov">0.00</strong>บาท</div>
+          <div class="guideCard">เราจ่ายเดือนนี้<strong class="r" id="mUser">0.00</strong>บาท</div>
+          <div class="guideCard">สิทธิรัฐคงเหลือ<strong class="g" id="mRemain">1,000.00</strong>บาท</div>
+        </div>
+        <div class="notice good" id="monthAdvice" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section class="view" id="page-guide">
+      <div class="card">
+        <h1 class="sectionTitle">📊 ตารางแนะนำ 60/40</h1>
+
+        <div class="notice good">
+          <b>จำง่ายที่สุด:</b>
+          เริ่มดูจาก <span class="b">ซื้อรวมกี่บาท</span> ก่อนเสมอ →
+          จากนั้นดูว่า <span class="g">รัฐจ่ายให้กี่บาท</span> →
+          และสุดท้ายดูว่า <span class="r">เราจ่ายเองกี่บาท</span>
+          <br><b>สูตรหลัก:</b> รัฐช่วย 60% แต่ไม่เกิน <span class="g">200 บาท/วัน</span>
+        </div>
+
+        <div class="notice warn" style="margin-top:12px">
+          ✅ <b>อย่าจำสลับ:</b>
+          <span class="b">ซื้อรวม</span> = ราคาของทั้งหมด,
+          <span class="g">รัฐจ่ายให้</span> = เงินที่รัฐช่วย,
+          <span class="r">เราจ่ายเอง</span> = เงินสด/เงินเราเองที่ต้องออก
+        </div>
+
+        <div class="planGrid" style="margin-top:12px">
+          <div class="planCard">
+            <div class="planHead">ต่อวัน</div>
+            <div class="planLine buy"><span>ซื้อรวม</span><strong>333.33</strong><em>บาท</em></div>
+            <div class="planLine gov"><span>รัฐจ่ายให้</span><strong>200.00</strong><em>บาท</em></div>
+            <div class="planLine user"><span>เราจ่ายเอง</span><strong>133.33</strong><em>บาท</em></div>
+            <div class="planNote">ใช้สิทธิรัฐได้เต็มวันพอดี</div>
+          </div>
+
+          <div class="planCard">
+            <div class="planHead">ต่อเดือน</div>
+            <div class="planLine buy"><span>ซื้อรวม</span><strong>1,666.67</strong><em>บาท</em></div>
+            <div class="planLine gov"><span>รัฐจ่ายให้</span><strong>1,000.00</strong><em>บาท</em></div>
+            <div class="planLine user"><span>เราจ่ายเอง</span><strong>666.67</strong><em>บาท</em></div>
+            <div class="planNote">ใช้สิทธิรัฐครบ 1,000 บาท/เดือน</div>
+          </div>
+
+          <div class="planCard">
+            <div class="planHead">ตลอด 4 เดือน</div>
+            <div class="planLine buy"><span>ซื้อรวม</span><strong>6,666.67</strong><em>บาท</em></div>
+            <div class="planLine gov"><span>รัฐจ่ายให้</span><strong>4,000.00</strong><em>บาท</em></div>
+            <div class="planLine user"><span>เราจ่ายเอง</span><strong>2,666.67</strong><em>บาท</em></div>
+            <div class="planNote">รวมสิทธิ 4 เดือน ถ้าใช้ครบทุกเดือน</div>
+          </div>
+        </div>
+
+        <div class="quickExample">
+          <div class="quickTitle">ตัวอย่าง</div>
+          <div class="quickFlow">
+            <div><b class="b">ซื้อรวม 333.33</b><small>ราคาสินค้าทั้งหมด</small></div>
+            <div class="arrow">→</div>
+            <div><b class="g">รัฐจ่ายให้ 200.00</b><small>รัฐช่วยเต็มสิทธิวัน</small></div>
+            <div class="arrow">→</div>
+            <div><b class="r">เราจ่ายเอง 133.33</b><small>เงินที่เราต้องจ่ายเองเอง</small></div>
+          </div>
+        </div>
+
+        <div class="guideGrid explainGrid" style="margin-top:12px">
+          <div class="guideCard explainCard">
+            <div class="exIcon">1</div>
+            <b>ถ้าซื้อต่ำกว่า 333.33</b>
+            <p>รัฐช่วย 60% ของราคาสินค้า เช่น ซื้อ 100 บาท รัฐจ่ายให้ 60 บาท เราจ่ายเอง 40 บาท</p>
+          </div>
+          <div class="guideCard explainCard">
+            <div class="exIcon">2</div>
+            <b>ถ้าซื้อ 333.33</b>
+            <p>เป็นจุดคุ้มสุดต่อวัน รัฐจ่ายให้ 200 บาท และเราจ่ายเอง 133.33 บาท</p>
+          </div>
+          <div class="guideCard explainCard">
+            <div class="exIcon">3</div>
+            <b>ถ้าซื้อเกิน 333.33</b>
+            <p>รัฐยังจ่ายสูงสุดแค่ 200 บาท ส่วนที่เกินจากนั้นเราจ่ายเองเพิ่มทั้งหมด</p>
+          </div>
+        </div>
+
+        <div class="notice warn" style="margin-top:12px">
+          ⭐ <b>ตารางตัวอย่างราคาที่ใช้บ่อย</b> ดูก่อนเพื่อเข้าใจเร็ว แล้วค่อยเลื่อนดูตารางเต็มด้านล่าง
+        </div>
+
+        <div class="tableWrap sampleWrap">
+          <table class="compareTable sampleTable">
+            <thead>
+              <tr>
+                <th>ซื้อรวม</th>
+                <th>รัฐจ่ายให้</th>
+                <th>เราจ่ายเอง</th>
+                <th>อ่านแบบง่าย</th>
+              </tr>
+            </thead>
+            <tbody id="sampleRows"></tbody>
+          </table>
+        </div>
+
+        <div class="notice good" style="margin-top:12px">
+          📌 <b>ตารางเต็ม:</b> ราคาตั้งแต่ <b>5 บาท</b> ถึง <b>355 บาท</b> เพิ่มทีละ <b>5 บาท</b>
+          <br><span class="b">สีฟ้า</span> = ซื้อรวม,
+          <span class="g">สีเขียว</span> = รัฐจ่ายให้,
+          <span class="r">สีแดง</span> = เราจ่ายเอง
+        </div>
+
+        <div class="tableTools">
+          <button class="btn primary" id="jumpBestPrice">ไปแถวคุ้มสุด 333.33</button>
+          <button class="btn" id="printCompareTable">พิมพ์ / บันทึก PDF</button>
+        </div>
+
+        <div class="tableWrap compareWrap">
+          <table class="compareTable">
+            <thead>
+              <tr>
+                <th>ซื้อรวม</th>
+                <th>รัฐจ่ายให้</th>
+                <th>เราจ่ายเอง</th>
+                <th>หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody id="compareRows"></tbody>
+          </table>
+        </div>
+
+        <div class="notice danger" style="margin-top:12px">
+          ⚠️ <b>ข้อควรระวัง:</b> ตารางนี้เป็นตัวอย่างกรณียังมีสิทธิรัฐเต็มวัน 200 บาท
+          ถ้าวันนั้นใช้สิทธิไปแล้ว ให้ดูยอดจริงจากหน้า <b>ราคาสินค้า</b> หรือหน้า <b>วันนี้</b>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="page-settings">
+      <div class="card">
+        <h1 class="sectionTitle">⚙️ ตั้งค่า / ล้างข้อมูล / สำรองข้อมูล</h1>
+        <div class="formGrid">
+          <div class="field"><label>วงเงินรัฐต่อวัน</label><input class="input" id="dailyLimit" inputmode="decimal" value="200"></div>
+          <div class="field"><label>วงเงินรัฐต่อเดือน</label><input class="input" id="monthlyLimit" inputmode="decimal" value="1000"></div>
+          <div class="field"><label>เปอร์เซ็นต์รัฐช่วย</label><input class="input" id="rateSetting" inputmode="numeric" value="60"></div>
+          <div class="field"><label>โหมดแสดงผล</label><select class="input" id="displayMode"><option value="simple">โหมดง่าย</option><option value="detailed">โหมดละเอียด</option></select></div>
+        </div>
+        <div class="actions">
+          <button class="btn green" id="saveSettings">✅ บันทึกตั้งค่า</button>
+          <button class="btn" id="exportCsv">📄 ส่งออก CSV</button>
+          <button class="btn" id="backupJson">💾 สำรอง JSON</button>
+          <button class="btn" id="restoreBtn">📥 นำข้อมูลกลับ</button>
+        </div>
+        <input type="file" id="restoreFile" class="hidden" accept="application/json">
+        <div class="notice danger">
+          <b>ล้างข้อมูล</b>
+          <div class="actions">
+            <button class="btn danger" id="clearDaySettings">ล้างเฉพาะวันนี้</button>
+            <button class="btn danger" id="clearMonthSettings">ล้างเดือนนี้</button>
+            <button class="btn danger" id="clearAllSettings">ล้างทั้งหมด</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="page-info">
+      <div class="card">
+        <h1 class="sectionTitle">ℹ️ สูตร / วิธีใช้ / ตรวจสูตร</h1>
+        <div class="notice good">
+          <b>สูตรหลัก:</b><br>
+          รัฐช่วยจริง = MIN(ราคาสินค้า × เปอร์เซ็นต์รัฐช่วย, สิทธิรัฐคงเหลือวันนี้, สิทธิรัฐคงเหลือเดือนนี้)<br>
+          เราจ่ายจริง = ราคาสินค้า − รัฐช่วยจริง
+        </div>
+        <div class="actions"><button class="btn green" id="runFormulaTest">✅ ตรวจสูตรตอนนี้</button></div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>ราคาทดสอบ</th><th>รัฐช่วยควรได้</th><th>เราจ่ายควรได้</th><th>ผล</th></tr></thead>
+            <tbody id="formulaTestRows"></tbody>
+          </table>
+        </div>
+        <div class="notice good" id="formulaTestResult" style="margin-top:12px">กดปุ่มเพื่อตรวจสูตร</div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottomNav" id="bottomNav">
+    <button class="tab active" data-page="home"><span class="tabIcon">🏠</span><span class="tabMain">หลัก</span></button>
+    <button class="tab" data-page="today"><span class="tabIcon">🧾</span><span class="tabMain">วันนี้</span></button>
+    <button class="tab" data-page="month"><span class="tabIcon">📅</span><span class="tabMain">เดือน</span></button>
+  </nav>
+</div>
+
+<script>
+/* =========================================================
+   JavaScript สูตรหลัก
+   ห้ามแก้สูตรโดยไม่ทดสอบ:
+   รัฐช่วยจริง = MIN(ราคา × %รัฐช่วย, สิทธิวันเหลือ, สิทธิเดือนเหลือ)
+   เราจ่ายเอง = ราคา - รัฐช่วยจริง
+   ========================================================= */
+
+const KEY='thai6040_final_v21_ui_text_date_polish';
+const BACKUP_KEY='thai6040_final_v21_ui_text_date_polish_backup';
+const OLD_KEYS=[
+  'thai6040_final_v20_thai_date_guide','thai6040_final_v19_guide_clarity','thai6040_final_v18_dev_source_complete','thai6040_final_v17_guide_explained',
+  'thai6040_final_v16_product_table',
+  'thai6040_final_v15_instant_sync',
+  'thai6040_final_v14_fixed_cards',
+  'thai6040_fast_clean_v13',
+  'thai6040_final_complete_v10',
+  'thai6040_ultra_complete_v9'
+];
+
+
+const THAI_MONTHS_SHORT=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const THAI_MONTHS_FULL=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const THAI_DAYS_FULL=['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'];
+function parseISODateLocal(s){
+  const [y,m,d]=String(s||todayKey()).split('-').map(Number);
+  return new Date(y,(m||1)-1,d||1);
+}
+function isoFromDateLocal(d){
+  const x=new Date(d);
+  x.setMinutes(x.getMinutes()-x.getTimezoneOffset());
+  return x.toISOString().slice(0,10);
+}
+function addDaysISO(iso,days){
+  const d=parseISODateLocal(iso);
+  d.setDate(d.getDate()+days);
+  return isoFromDateLocal(d);
+}
+function addMonthsISO(month,delta){
+  const [y,m]=String(month||monthKey()).split('-').map(Number);
+  const d=new Date(y,(m||1)-1+delta,1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function thaiYearShort(y){
+  return String((Number(y)+543)%100).padStart(2,'0');
+}
+function thaiDateShort(iso){
+  const d=parseISODateLocal(iso);
+  return `${String(d.getDate()).padStart(2,'0')} ${THAI_MONTHS_SHORT[d.getMonth()]} ${thaiYearShort(d.getFullYear())}`;
+}
+function thaiDateLong(iso){
+  const d=parseISODateLocal(iso);
+  return `${THAI_DAYS_FULL[d.getDay()]}ที่ ${String(d.getDate()).padStart(2,'0')} ${THAI_MONTHS_FULL[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+function thaiMonthLong(month){
+  const [y,m]=String(month||monthKey()).split('-').map(Number);
+  return `${THAI_MONTHS_FULL[(m||1)-1]} ${y+543}`;
+}
+function todayPrefix(iso){
+  return iso===todayKey()?'วันนี้ ':'';
+}
+
+const $=id=>document.getElementById(id);
+const money=(v,d=2)=>Number(v||0).toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d});
+const n=v=>{
+  const x=parseFloat(String(v??'').replace(/,/g,''));
+  return Number.isFinite(x)?Math.max(0,x):0;
+};
+const round2=v=>Math.round((Number(v)||0)*100)/100;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const todayKey=()=>{
+  const d=new Date();
+  d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+};
+const monthKey=()=>todayKey().slice(0,7);
+const nowTime=()=>new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+
+function daysInMonth(year,monthIndex0){
+  return new Date(year,monthIndex0+1,0).getDate();
+}
+function fillThaiDateSelects(){
+  const ds=$('dateDaySelect'), ms=$('dateMonthSelect'), ys=$('dateYearSelect');
+  if(!ds||!ms||!ys)return;
+
+  ms.innerHTML=THAI_MONTHS_SHORT.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  const now=new Date();
+  const start=now.getFullYear()-1;
+  const years=[];
+  for(let y=start;y<=start+5;y++)years.push(y);
+  ys.innerHTML=years.map(y=>`<option value="${y}">${y+543}</option>`).join('');
+}
+function syncDateSelectsFromHidden(){
+  const iso=selectedDate();
+  const d=parseISODateLocal(iso);
+  const ds=$('dateDaySelect'), ms=$('dateMonthSelect'), ys=$('dateYearSelect');
+  if(!ds||!ms||!ys)return;
+
+  const max=daysInMonth(d.getFullYear(),d.getMonth());
+  ds.innerHTML=Array.from({length:max},(_,i)=>`<option value="${i+1}">${String(i+1).padStart(2,'0')}</option>`).join('');
+  ds.value=d.getDate();
+  ms.value=d.getMonth()+1;
+  ys.value=d.getFullYear();
+}
+function updateThaiDateUI(){
+  const iso=selectedDate();
+  if($('thaiDateLabel'))$('thaiDateLabel').textContent=todayPrefix(iso)+thaiDateShort(iso);
+  if($('thaiDateSub'))$('thaiDateSub').textContent=thaiDateLong(iso);
+  syncDateSelectsFromHidden();
+}
+function setSelectedDateThai(iso){
+  $('selectedDate').value=iso;
+  updateThaiDateUI();
+  recalc('price',true,true);
+  renderToday();
+  renderMonth();
+}
+function dateSelectChanged(){
+  const y=Number($('dateYearSelect').value);
+  const m=Number($('dateMonthSelect').value);
+  const d=Math.min(Number($('dateDaySelect').value),daysInMonth(y,m-1));
+  setSelectedDateThai(`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+}
+
+function fillThaiMonthSelects(){
+  const ms=$('monthMonthSelect'), ys=$('monthYearSelect');
+  if(!ms||!ys)return;
+  ms.innerHTML=THAI_MONTHS_FULL.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  const now=new Date();
+  const start=now.getFullYear()-1;
+  const years=[];
+  for(let y=start;y<=start+5;y++)years.push(y);
+  ys.innerHTML=years.map(y=>`<option value="${y}">${y+543}</option>`).join('');
+}
+function updateThaiMonthUI(){
+  const m=selectedMonth();
+  const [y,mo]=m.split('-').map(Number);
+  if($('thaiMonthLabel'))$('thaiMonthLabel').textContent=thaiMonthLong(m);
+  if($('thaiMonthSub'))$('thaiMonthSub').textContent=`เดือน ${THAI_MONTHS_FULL[mo-1]} ปี พ.ศ. ${y+543}`;
+  if($('monthMonthSelect'))$('monthMonthSelect').value=mo;
+  if($('monthYearSelect'))$('monthYearSelect').value=y;
+}
+function setSelectedMonthThai(month){
+  $('selectedMonth').value=month;
+  updateThaiMonthUI();
+  renderMonth();
+}
+function monthSelectChanged(){
+  const y=Number($('monthYearSelect').value);
+  const m=Number($('monthMonthSelect').value);
+  setSelectedMonthThai(`${y}-${String(m).padStart(2,'0')}`);
+}
+
+const state={
+  rate:60,
+  dailyLimit:200,
+  monthlyLimit:1000,
+  theme:'light',
+  mode:'detailed',
+  records:[],
+  activeInput:'price',
+  replaceOnKey:true,
+  acc:null,
+  lastRecordId:null,
+  current:{price:333.33,gov:200,user:133.33,limited:false}
+};
+
+function load(){
+  try{
+    let raw=localStorage.getItem(KEY)||localStorage.getItem(BACKUP_KEY);
+    if(!raw){
+      for(const k of OLD_KEYS){
+        raw=localStorage.getItem(k);
+        if(raw)break;
+      }
+    }
+    const saved=raw?JSON.parse(raw):{};
+    if(saved && typeof saved==='object'){
+      if(Array.isArray(saved.records))state.records=saved.records;
+      if(Number.isFinite(+saved.rate))state.rate=+saved.rate;
+      if(Number.isFinite(+saved.dailyLimit))state.dailyLimit=+saved.dailyLimit;
+      if(Number.isFinite(+saved.monthlyLimit))state.monthlyLimit=+saved.monthlyLimit;
+      if(saved.theme==='dark'||saved.theme==='light')state.theme=saved.theme;
+      if(saved.mode)state.mode=saved.mode;
+    }
+  }catch(e){}
+  if(!Array.isArray(state.records))state.records=[];
+  // หน้าเครื่องคิดเลขตั้งต้น 333.33 ตามที่กำหนด
+  state.current=calcFromPrice(333.33);
+}
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+    localStorage.setItem(BACKUP_KEY,JSON.stringify(state));
+  }catch(e){}
+}
+let saveTimer=null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(save,700);
+}
+
+function selectedDate(){return $('selectedDate')?.value||todayKey()}
+function selectedMonth(){return $('selectedMonth')?.value||monthKey()}
+
+function daySummary(date=selectedDate(),excludeId=null){
+  return state.records
+    .filter(r=>r.date===date && r.id!==excludeId)
+    .reduce((a,r)=>({
+      buy:a.buy+n(r.price),
+      gov:a.gov+n(r.gov),
+      user:a.user+n(r.user)
+    }),{buy:0,gov:0,user:0});
+}
+function monthSummary(month=selectedMonth(),excludeId=null){
+  return state.records
+    .filter(r=>(r.date||'').slice(0,7)===month && r.id!==excludeId)
+    .reduce((a,r)=>({
+      buy:a.buy+n(r.price),
+      gov:a.gov+n(r.gov),
+      user:a.user+n(r.user)
+    }),{buy:0,gov:0,user:0});
+}
+function limits(date=selectedDate(),excludeId=null){
+  const d=daySummary(date,excludeId);
+  const m=monthSummary(date.slice(0,7),excludeId);
+  const remainDay=Math.max(0,state.dailyLimit-d.gov);
+  const remainMonth=Math.max(0,state.monthlyLimit-m.gov);
+  return {
+    day:d,
+    month:m,
+    remainGov:round2(Math.min(remainDay,remainMonth)),
+    remainDay:round2(remainDay),
+    remainMonth:round2(remainMonth)
+  };
+}
+
+/* ---------- สูตรคำนวณ 3 ช่อง ---------- */
+function calcFromPrice(price,date=selectedDate(),excludeId=null){
+  price=round2(n(price));
+  const l=limits(date,excludeId);
+  const ideal=round2(price*state.rate/100);
+  const gov=round2(Math.min(ideal,l.remainGov));
+  return {price,gov,user:round2(price-gov),limited:gov+0.005<ideal};
+}
+function calcFromGov(govInput,date=selectedDate(),excludeId=null){
+  const l=limits(date,excludeId);
+  const gov=round2(Math.min(n(govInput),l.remainGov));
+  const price=state.rate>0?round2(gov/(state.rate/100)):0;
+  return {price,gov,user:round2(price-gov),limited:false};
+}
+function calcFromUser(user,date=selectedDate(),excludeId=null){
+  user=round2(n(user));
+  const l=limits(date,excludeId);
+  const userRate=Math.max(0,100-state.rate);
+
+  if(state.rate>=100){
+    const gov=round2(Math.min(l.remainGov,user));
+    return {price:user,gov,user:round2(user-gov),limited:true};
+  }
+  if(state.rate<=0){
+    return {price:user,gov:0,user,limited:false};
+  }
+
+  const govByRatio=round2(user*state.rate/userRate);
+  if(govByRatio<=l.remainGov+0.005){
+    const price=round2(user/(userRate/100));
+    return {price,gov:round2(price-user),user,limited:false};
+  }
+
+  const gov=l.remainGov;
+  return {price:round2(user+gov),gov,user,limited:true};
+}
+
+function setVal(id,val){
+  const el=$(id);
+  if(el && el.value!==val)el.value=val;
+}
+function setFields(c,write=true){
+  state.current={
+    price:round2(c.price),
+    gov:round2(c.gov),
+    user:round2(c.user),
+    limited:!!c.limited
+  };
+  const vals={
+    price:money(c.price),
+    gov:money(c.gov),
+    userPay:money(c.user)
+  };
+
+  if(write){
+    setVal('price',vals.price);
+    setVal('gov',vals.gov);
+    setVal('userPay',vals.userPay);
+  }else{
+    // ระหว่างพิมพ์: รักษาช่องที่กำลังพิมพ์ไว้ แต่อีก 2 ช่องเปลี่ยนทันที
+    if(state.activeInput!=='price')setVal('price',vals.price);
+    if(state.activeInput!=='gov')setVal('gov',vals.gov);
+    if(state.activeInput!=='userPay')setVal('userPay',vals.userPay);
+  }
+}
+function activeSource(){
+  if(state.activeInput==='gov')return 'gov';
+  if(state.activeInput==='userPay')return 'user';
+  return 'price';
+}
+function recalc(source=activeSource(),write=true,persist=false){
+  let c;
+  if(source==='gov')c=calcFromGov($('gov').value);
+  else if(source==='user')c=calcFromUser($('userPay').value);
+  else c=calcFromPrice($('price').value);
+
+  setFields(c,write);
+  updateCalcUI();
+
+  if(persist)save();
+  else scheduleSave();
+}
+function updateCalcUI(){
+  const c=state.current;
+  const l=limits();
+
+  $('remainTodayTop').textContent=money(l.remainGov);
+  $('resPrice').textContent=money(c.price);
+  $('resGov').textContent=money(c.gov);
+  $('resUser').textContent=money(c.user);
+  $('cashHint').textContent=`ควรเตรียมประมาณ ${Math.ceil(c.user)} บาท`;
+
+  $('ratioGovText').textContent=state.rate+'%';
+  $('ratioUserText').textContent=(100-state.rate)+'%';
+  $('rateGovLabel').textContent=state.rate+'%';
+  $('rateUserLabel').textContent=(100-state.rate)+'%';
+  $('rateSlider').value=state.rate;
+  $('rateSetting').value=state.rate;
+  $('dailyLimit').value=state.dailyLimit;
+  $('monthlyLimit').value=state.monthlyLimit;
+  $('displayMode').value=state.mode||'detailed';
+
+  const buyMore=state.rate>0?round2(l.remainGov/(state.rate/100)):0;
+  const payMore=round2(buyMore-l.remainGov);
+
+  $('todayAdvice').innerHTML=l.remainGov>0
+    ? `💳 วันนี้ยังมีสิทธิรัฐเหลือ <span class="g">${money(l.remainGov)}</span> บาท<br>แนะนำซื้อเพิ่มได้ประมาณ <span class="b">${money(buyMore)}</span> บาท และเตรียมจ่ายเองประมาณ <span class="r">${money(payMore)}</span> บาท`
+    : `🔴 วันนี้ใช้สิทธิรัฐครบแล้ว ถ้าซื้อเพิ่มวันนี้ เราจ่ายเองทั้งหมด`;
+
+  $('formulaStatus').textContent=c.limited
+    ? '⚠️ รายการนี้ชนเพดานสิทธิแล้ว'
+    : '🔔 พร้อมใช้งาน สูตรถูกต้อง';
+
+  const locked=$('lockFormula').checked;
+  $('decRate').disabled=locked;
+  $('incRate').disabled=locked;
+  $('rateSlider').disabled=locked;
+}
+
+/* ---------- Keypad ---------- */
+function focusField(id,replace=true){
+  state.activeInput=id;
+  state.replaceOnKey=replace;
+  ['price','gov','userPay'].forEach(x=>{
+    $(x).style.filter=x===id?'drop-shadow(0 0 10px rgba(7,87,216,.22))':'';
+  });
+}
+function pressKey(k){
+  const el=$(state.activeInput);
+  let raw=state.replaceOnKey?'':String(el.value).replace(/,/g,'');
+
+  if(k==='.' && raw.includes('.'))return;
+  if(k==='00' && raw==='')raw='0';
+  else raw+=k;
+
+  if(raw.length>11)raw=raw.slice(0,11);
+  el.value=raw;
+  state.replaceOnKey=false;
+  recalc(activeSource(),false,false);
+}
+function backspace(){
+  const el=$(state.activeInput);
+  let raw=String(el.value).replace(/,/g,'').slice(0,-1)||'0';
+  el.value=raw;
+  recalc(activeSource(),false,false);
+}
+function clearEntry(){
+  const el=$(state.activeInput);
+  el.value='0';
+  state.acc=null;
+  recalc(activeSource(),false,false);
+}
+function plusOp(){
+  const el=$(state.activeInput);
+  state.acc=round2((state.acc??0)+n(el.value));
+  el.value='0';
+  state.replaceOnKey=true;
+  recalc(activeSource(),false,false);
+}
+function equalOp(){
+  if(state.acc!==null){
+    const el=$(state.activeInput);
+    el.value=money(round2(state.acc+n(el.value)));
+    state.acc=null;
+    recalc(activeSource(),true,true);
+  }else{
+    setFields(state.current,true);
+  }
+  state.replaceOnKey=true;
+}
+
+/* ---------- Records ---------- */
+function newId(){
+  return Date.now()+''+Math.random().toString(16).slice(2);
+}
+function sortRecords(list){
+  return list.sort((a,b)=>{
+    const ak=(a.date||'')+' '+(a.time||'')+' '+(a.id||'');
+    const bk=(b.date||'')+' '+(b.time||'')+' '+(b.id||'');
+    return ak.localeCompare(bk);
+  });
+}
+/*
+   คำนวณรายการในเดือนใหม่ตามลำดับเวลา
+   ใช้เมื่อแก้/ลบรายการย้อนหลัง เพื่อไม่ให้สิทธิรัฐค้างค่าเก่า
+*/
+function recalcMonthRecords(month){
+  const monthRecords=sortRecords(state.records.filter(r=>(r.date||'').slice(0,7)===month));
+  const dayUsed={};
+  let monthGov=0;
+
+  for(const r of monthRecords){
+    const date=r.date;
+    if(!dayUsed[date])dayUsed[date]=0;
+
+    const price=round2(n(r.price));
+    const ideal=round2(price*state.rate/100);
+    const remainDay=Math.max(0,state.dailyLimit-dayUsed[date]);
+    const remainMonth=Math.max(0,state.monthlyLimit-monthGov);
+    const gov=round2(Math.min(ideal,remainDay,remainMonth));
+    const user=round2(price-gov);
+
+    r.price=price;
+    r.gov=gov;
+    r.user=user;
+    r.rate=state.rate;
+    r.limited=gov+0.005<ideal;
+
+    dayUsed[date]=round2(dayUsed[date]+gov);
+    monthGov=round2(monthGov+gov);
+  }
+}
+function saveRecord(blank=false){
+  const date=selectedDate();
+  const c=blank?calcFromPrice(0):state.current;
+
+  if(!blank && c.price<=0){
+    alert('กรุณากรอกราคาสินค้าก่อนบันทึก');
+    return;
+  }
+
+  const name=blank?'':($('itemName').value.trim()||'ไม่ระบุรายการ');
+  const note=blank?'':$('itemNote').value.trim();
+  const id=newId();
+
+  state.records.push({
+    id,
+    date,
+    time:nowTime(),
+    name,
+    note,
+    price:c.price,
+    gov:c.gov,
+    user:c.user,
+    rate:state.rate,
+    limited:!!c.limited
+  });
+
+  state.lastRecordId=id;
+  recalcMonthRecords(date.slice(0,7));
+
+  $('itemName').value='';
+  $('itemNote').value='';
+  save();
+  recalc('price',true,true);
+  renderToday();
+  renderMonth();
+
+  const l=limits();
+  $('lastSavedBox').style.display='block';
+  $('lastSavedBox').innerHTML=`✅ บันทึกแล้ว: <b>${esc(name||'รายการว่าง')}</b><br>ซื้อ ${money(c.price)} บาท | รัฐช่วย ${money(c.gov)} บาท | เราจ่าย ${money(c.user)} บาท<br>สิทธิรัฐวันนี้เหลือ ${money(l.remainGov)} บาท`;
+}
+function undoLast(){
+  if(!state.lastRecordId){
+    alert('ยังไม่มีรายการล่าสุดให้ยกเลิก');
+    return;
+  }
+  const r=state.records.find(x=>x.id===state.lastRecordId);
+  if(r && confirm(`ยกเลิกรายการล่าสุด: ${r.name||'รายการว่าง'} ราคา ${money(r.price)} บาท?`)){
+    const month=(r.date||selectedDate()).slice(0,7);
+    state.records=state.records.filter(x=>x.id!==state.lastRecordId);
+    state.lastRecordId=null;
+    recalcMonthRecords(month);
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+function renderToday(){
+  const d=selectedDate();
+  const q=($('searchText')?.value||'').toLowerCase();
+  const f=$('recordFilter')?.value||'all';
+
+  let data=state.records.filter(r=>r.date===d);
+  if(q)data=data.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.note||'').toLowerCase().includes(q));
+  if(f==='limited')data=data.filter(r=>r.limited);
+  if(f==='full')data=data.filter(r=>!r.limited);
+
+  const s=daySummary(d);
+  const l=limits(d);
+
+  $('statBuy').textContent=money(s.buy);
+  $('statGov').textContent=money(s.gov);
+  $('statUser').textContent=money(s.user);
+  $('statRemain').textContent=money(l.remainGov);
+
+  $('recordRows').innerHTML=data.length
+    ? data.map(r=>`<tr>
+        <td>${esc(r.time)}</td>
+        <td><input value="${esc(r.name||'')}" onchange="editRecord('${r.id}','name',this.value)"></td>
+        <td><input value="${esc(r.note||'')}" onchange="editRecord('${r.id}','note',this.value)"></td>
+        <td><input value="${money(r.price)}" onchange="editRecordPrice('${r.id}',this.value)"></td>
+        <td class="g">${money(r.gov)}</td>
+        <td class="r">${money(r.user)}</td>
+        <td><button class="btn danger" onclick="deleteRecord('${r.id}')">ลบ</button></td>
+      </tr>`).join('')
+    : `<tr><td colspan="7">ยังไม่มีรายการบันทึก</td></tr>`;
+}
+function editRecord(id,field,val){
+  const r=state.records.find(x=>x.id===id);
+  if(r){
+    r[field]=val;
+    save();
+    renderToday();
+  }
+}
+function editRecordPrice(id,val){
+  const r=state.records.find(x=>x.id===id);
+  if(r){
+    const month=(r.date||selectedDate()).slice(0,7);
+    r.price=round2(n(val));
+    recalcMonthRecords(month);
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+function deleteRecord(id){
+  const r=state.records.find(x=>x.id===id);
+  if(!r)return;
+  if(confirm('ลบรายการนี้?')){
+    const month=(r.date||selectedDate()).slice(0,7);
+    state.records=state.records.filter(x=>x.id!==id);
+    if(state.lastRecordId===id)state.lastRecordId=null;
+    recalcMonthRecords(month);
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+function renderMonth(){
+  const m=selectedMonth();
+  recalcMonthRecords(m);
+
+  const s=monthSummary(m);
+  const remain=round2(Math.max(0,state.monthlyLimit-s.gov));
+  $('mBuy').textContent=money(s.buy);
+  $('mGov').textContent=money(s.gov);
+  $('mUser').textContent=money(s.user);
+  $('mRemain').textContent=money(remain);
+
+  const buyMore=state.rate>0?round2(remain/(state.rate/100)):0;
+  const payMore=round2(buyMore-remain);
+
+  $('monthAdvice').innerHTML=remain>0
+    ? `เดือนนี้เหลือสิทธิรัฐ <span class="g">${money(remain)}</span> บาท แนะนำซื้อเพิ่มประมาณ <span class="b">${money(buyMore)}</span> บาท และเตรียมจ่ายเองประมาณ <span class="r">${money(payMore)}</span> บาท`
+    : `เดือนนี้ใช้สิทธิรัฐครบแล้ว`;
+}
+function clearDayData(){
+  if(confirm('ล้างรายการของวันที่เลือกทั้งหมด?')){
+    const d=selectedDate();
+    const m=d.slice(0,7);
+    state.records=state.records.filter(r=>r.date!==d);
+    recalcMonthRecords(m);
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+function clearMonthData(){
+  if(confirm('ล้างรายการของเดือนที่เลือกทั้งหมด?')){
+    const m=selectedMonth();
+    state.records=state.records.filter(r=>(r.date||'').slice(0,7)!==m);
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+function clearAllData(){
+  if(confirm('ล้างข้อมูลทั้งหมด?')){
+    state.records=[];
+    state.lastRecordId=null;
+    save();
+    recalc('price',true,true);
+    renderToday();
+    renderMonth();
+  }
+}
+
+/* ---------- Guide Tables ---------- */
+function calcFullRightTable(price){
+  price=round2(n(price));
+  const ideal=round2(price*state.rate/100);
+  const gov=round2(Math.min(ideal,state.dailyLimit,state.monthlyLimit));
+  return {price,gov,user:round2(price-gov),limited:gov+0.005<ideal};
+}
+function renderSampleRows(){
+  const tbody=$('sampleRows');
+  if(!tbody)return;
+  const examples=[
+    {p:5,note:'ของเล็ก ๆ รัฐช่วย 60%'},
+    {p:20,note:'ยอดเล็ก ใช้สูตร 60/40 ปกติ'},
+    {p:50,note:'เราจ่ายประมาณ 20 บาท'},
+    {p:100,note:'จำง่าย รัฐ 60 เรา 40'},
+    {p:150,note:'รัฐช่วย 90 เราจ่าย 60'},
+    {p:200,note:'รัฐช่วย 120 เราจ่าย 80'},
+    {p:250,note:'ยังไม่เต็มสิทธิวัน'},
+    {p:300,note:'ใกล้เต็มสิทธิ รัฐช่วย 180'},
+    {p:333.33,note:'ซื้อรวม 333.33 → รัฐ 200 → เรา 133.33',best:true},
+    {p:335,note:'รัฐจ่ายให้เต็ม 200 แล้ว เราจ่ายส่วนเกิน'},
+    {p:355,note:'รัฐยังจ่าย 200 ที่เหลือเราจ่ายเอง'}
+  ];
+  tbody.innerHTML=examples.map(x=>{
+    const c=calcFullRightTable(x.p);
+    return `<tr class="${x.best?'highlight':''}">
+      <td class="priceCol">${money(x.p)}</td>
+      <td class="govCol">${money(c.gov)}</td>
+      <td class="userCol">${money(c.user)}</td>
+      <td class="simpleNote">${x.note}</td>
+    </tr>`;
+  }).join('');
+}
+function renderCompareTable(){
+  renderSampleRows();
+  const tbody=$('compareRows');
+  if(!tbody)return;
+
+  const rows=[];
+  for(let price=5;price<=355;price+=5){
+    const c=calcFullRightTable(price);
+    const isCap=c.limited;
+    let note='';
+    if(price<333.33)note='รัฐจ่ายให้ 60%';
+    else if(price<=335)note='ใกล้คุ้มสุด';
+    else note='รัฐจ่ายให้ตัน 200';
+
+    rows.push(`<tr class="${isCap?'capRow':''}">
+      <td class="priceCol">${money(price)}</td>
+      <td class="govCol">${money(c.gov)}</td>
+      <td class="userCol">${money(c.user)}</td>
+      <td class="noteText">${note}</td>
+    </tr>`);
+  }
+
+  const best=calcFullRightTable(333.33);
+  rows.splice(Math.floor(333.33/5),0,`<tr class="bestRow" id="best333exact">
+    <td class="priceCol">${money(333.33)}</td>
+    <td class="govCol">${money(best.gov)}</td>
+    <td class="userCol">${money(best.user)}</td>
+    <td class="noteText">คุ้มสุดตามสูตร 60/40</td>
+  </tr>`);
+
+  tbody.innerHTML=rows.join('');
+}
+
+/* ---------- Navigation / Export ---------- */
+function showPage(page){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('page-'+page).classList.add('active');
+
+  document.querySelectorAll('.tab[data-page]').forEach(t=>t.classList.toggle('active',t.dataset.page===page));
+
+  if(page==='today')renderToday();
+  if(page==='month')renderMonth();
+  if(page==='guide')renderCompareTable();
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function download(name,content,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function exportCSV(){
+  const header=['date','time','name','note','price','gov','user','rate','limited'];
+  const rows=state.records.map(r=>header.map(h=>`"${String(r[h]??'').replace(/"/g,'""')}"`).join(','));
+  download('thai6040_records.csv','\ufeff'+header.join(',')+'\n'+rows.join('\n'),'text/csv;charset=utf-8');
+}
+function backupJSON(){
+  download('thai6040_backup.json',JSON.stringify(state,null,2),'application/json');
+}
+function restoreJSON(file){
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      Object.assign(state,data);
+      if(!Array.isArray(state.records))state.records=[];
+      save();
+      recalc('price',true,true);
+      renderToday();
+      renderMonth();
+      renderCompareTable();
+      alert('นำข้อมูลกลับมาสำเร็จ');
+    }catch(e){
+      alert('ไฟล์ไม่ถูกต้อง');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- Formula Test ---------- */
+function runFormulaTest(){
+  const old={
+    records:[...state.records.map(x=>({...x}))],
+    rate:state.rate,
+    dailyLimit:state.dailyLimit,
+    monthlyLimit:state.monthlyLimit
+  };
+
+  state.records=[];
+  state.rate=60;
+  state.dailyLimit=200;
+  state.monthlyLimit=1000;
+
+  const tests=[
+    {p:5,g:3,u:2},
+    {p:20,g:12,u:8},
+    {p:50,g:30,u:20},
+    {p:100,g:60,u:40},
+    {p:150,g:90,u:60},
+    {p:200,g:120,u:80},
+    {p:250,g:150,u:100},
+    {p:300,g:180,u:120},
+    {p:333.33,g:200,u:133.33},
+    {p:335,g:200,u:135},
+    {p:355,g:200,u:155},
+    {p:500,g:200,u:300}
+  ];
+
+  let ok=true;
+  $('formulaTestRows').innerHTML=tests.map(t=>{
+    const c=calcFromPrice(t.p);
+    const pass=Math.abs(c.gov-t.g)<.02 && Math.abs(c.user-t.u)<.02;
+    ok=ok&&pass;
+    return `<tr><td>${money(t.p)}</td><td class="g">${money(t.g)}</td><td class="r">${money(t.u)}</td><td>${pass?'✅ ถูกต้อง':'❌ ผิด'}</td></tr>`;
+  }).join('');
+
+  Object.assign(state,old);
+  $('formulaTestResult').className='notice '+(ok?'good':'danger');
+  $('formulaTestResult').textContent=ok?'✅ สูตรถูกต้อง พร้อมใช้งาน':'❌ สูตรผิด ต้องตรวจสอบ';
+  updateCalcUI();
+}
+
+/* ---------- Event Binding ---------- */
+document.querySelectorAll('.tab[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+document.querySelectorAll('.calcInput').forEach(i=>{
+  i.onfocus=()=>focusField(i.id,true);
+  i.oninput=()=>{
+    state.activeInput=i.id;
+    state.replaceOnKey=false;
+    recalc(i.id==='gov'?'gov':i.id==='userPay'?'user':'price',false,false);
+  };
+  i.onblur=()=>{
+    setFields(state.current,true);
+    save();
+  };
+});
+
+document.querySelectorAll('[data-focus]').forEach(b=>b.onclick=()=>{
+  showPage('home');
+  setTimeout(()=>{
+    $(b.dataset.focus).focus();
+    focusField(b.dataset.focus,true);
+  },80);
+});
+
+$('keypad').onclick=e=>{
+  const b=e.target.closest('button');
+  if(!b)return;
+  if(b.dataset.key)pressKey(b.dataset.key);
+  if(b.dataset.act==='back')backspace();
+  if(b.dataset.act==='clear')clearEntry();
+  if(b.dataset.act==='plus')plusOp();
+  if(b.dataset.act==='equal')equalOp();
+};
+$('resetCalc').onclick=()=>{
+  $('price').value='333.33';
+  focusField('price',true);
+  state.replaceOnKey=true;
+  recalc('price',true,true);
+};
+
+$('saveRecordBtn').onclick=()=>saveRecord(false);
+$('addBlank').onclick=()=>saveRecord(true);
+$('undoLastBtn').onclick=undoLast;
+if($('prevDay'))$('prevDay').onclick=()=>setSelectedDateThai(addDaysISO(selectedDate(),-1));
+if($('nextDay'))$('nextDay').onclick=()=>setSelectedDateThai(addDaysISO(selectedDate(),1));
+if($('dateDaySelect'))$('dateDaySelect').onchange=dateSelectChanged;
+if($('dateMonthSelect'))$('dateMonthSelect').onchange=dateSelectChanged;
+if($('dateYearSelect'))$('dateYearSelect').onchange=dateSelectChanged;
+
+if($('prevMonth'))$('prevMonth').onclick=()=>setSelectedMonthThai(addMonthsISO(selectedMonth(),-1));
+if($('nextMonth'))$('nextMonth').onclick=()=>setSelectedMonthThai(addMonthsISO(selectedMonth(),1));
+if($('monthMonthSelect'))$('monthMonthSelect').onchange=monthSelectChanged;
+if($('monthYearSelect'))$('monthYearSelect').onchange=monthSelectChanged;
+$('searchText').oninput=renderToday;
+$('recordFilter').onchange=renderToday;
+$('clearDay').onclick=clearDayData;
+$('clearDaySettings').onclick=clearDayData;
+$('clearMonthSettings').onclick=clearMonthData;
+$('clearAllSettings').onclick=clearAllData;
+
+$('saveSettings').onclick=()=>{
+  state.dailyLimit=round2(n($('dailyLimit').value)||200);
+  state.monthlyLimit=round2(n($('monthlyLimit').value)||1000);
+  state.rate=Math.max(0,Math.min(100,Math.round(n($('rateSetting').value)||60)));
+  state.mode=$('displayMode').value;
+
+  // ตั้งค่าใหม่แล้วคำนวณรายการเดือนปัจจุบันใหม่ เพื่อให้สรุปตรงกัน
+  recalcMonthRecords(selectedMonth());
+  save();
+  recalc('price',true,true);
+  renderToday();
+  renderMonth();
+  renderCompareTable();
+  alert('บันทึกตั้งค่าแล้ว');
+};
+
+$('lockFormula').onchange=updateCalcUI;
+$('rateSlider').oninput=e=>{
+  state.rate=Number(e.target.value);
+  recalc('price',false,false);
+  renderCompareTable();
+};
+$('decRate').onclick=()=>{
+  state.rate=Math.max(0,state.rate-1);
+  recalc('price',false,false);
+  renderCompareTable();
+};
+$('incRate').onclick=()=>{
+  state.rate=Math.min(100,state.rate+1);
+  recalc('price',false,false);
+  renderCompareTable();
+};
+
+$('themeBtn').onclick=()=>{
+  state.theme=state.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=state.theme;
+  $('themeBtn').textContent=state.theme==='dark'?'☀️':'🌙';
+  save();
+};
+
+$('exportCsv').onclick=exportCSV;
+$('backupJson').onclick=backupJSON;
+$('restoreBtn').onclick=()=>$('restoreFile').click();
+$('restoreFile').onchange=e=>{
+  if(e.target.files[0])restoreJSON(e.target.files[0]);
+};
+$('runFormulaTest').onclick=runFormulaTest;
+$('jumpBestPrice').onclick=()=>{
+  renderCompareTable();
+  setTimeout(()=>($('best333exact'))?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+};
+$('printCompareTable').onclick=()=>window.print();
+
+/* ---------- Initial Run ---------- */
+load();
+document.documentElement.dataset.theme=state.theme;
+$('themeBtn').textContent=state.theme==='dark'?'☀️':'🌙';
+$('selectedDate').value=todayKey();
+$('selectedMonth').value=monthKey();
+fillThaiDateSelects();
+fillThaiMonthSelects();
+updateThaiDateUI();
+updateThaiMonthUI();
+setFields(state.current,true);
+focusField('price',true);
+recalc('price',true,false);
+renderToday();
+renderMonth();
+renderCompareTable();
+</script>
+</body>
+</html>
